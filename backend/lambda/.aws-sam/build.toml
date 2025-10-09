@@ -9,4 +9,13 @@ manifest_hash = "6686853da3491a56c98917cc5c4ddea2"
 packagetype = "Zip"
 functions = ["ReportCaseFunction"]
 
+[function_build_definitions.183569e7-63ca-4442-ba71-917bef1997de]
+codeuri = "/Users/govindmaheshwari/nivaran/backend/lambda/functions/cases_nearby"
+runtime = "python3.9"
+architecture = "x86_64"
+handler = "app.lambda_handler"
+manifest_hash = "6686853da3491a56c98917cc5c4ddea2"
+packagetype = "Zip"
+functions = ["CasesNearbyFunction"]
+
 [layer_build_definitions]
