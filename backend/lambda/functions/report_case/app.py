@@ -4,11 +4,11 @@ import base64
 import boto3
 import json
 
-s3 = boto3.client('s3')
+s3 = boto3.client('s3', region_name='ap-south-1')
 rekognition = boto3.client('rekognition')
 dynamodb = boto3.resource('dynamodb')
-BUCKET_NAME ="nivaran-animal-images2"
-TABLE_NAME = "NivaranCases"
+BUCKET_NAME = "nivaran-animal-image"
+TABLE_NAME = "nivaran-cases-table"
 
 def lambda_handler(event, context):
     try:
@@ -32,7 +32,7 @@ def lambda_handler(event, context):
 
         # Filter for animals only
         labels = [label['Name'] for label in rekog_resp['Labels']]
-        animal_labels = [l for l in labels if l.lower() in ['cat', 'dog', 'animal', 'mammal', 'bird']]  # Expand for your use case
+        animal_labels = [l for l in labels if l.lower() in ['cat','dog','cow','animal', 'mammal', 'bird']]  
 
         if not animal_labels:
             status = 'invalid_image'
