@@ -1,6 +1,6 @@
 "use client"
-import { useState } from "react";
-import { Upload, MapPin, Send, AlertCircle, Camera, Loader2 } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { Upload, MapPin, Send, AlertCircle, Camera, Loader2, Navigation } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -27,10 +27,19 @@ const THEME = {
   text: "#fff"
 };
 
+
+const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!;
+
 export default function ReportPage({ onNavigate }: ReportPageProps) {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [aiDetection, setAiDetection] = useState<any>(null);
+  const [locationSuggestions, setLocationSuggestions] = useState<string[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [isGettingLocation, setIsGettingLocation] = useState(false);
+  const locationInputRef = useRef<HTMLInputElement>(null);
+  const suggestionsRef = useRef<HTMLDivElement>(null);
+
   const [formData, setFormData] = useState({
     description: "",
     severity: "",
@@ -38,6 +47,23 @@ export default function ReportPage({ onNavigate }: ReportPageProps) {
     contactPhone: "",
     location: "",
   });
+
+  // Close suggestions when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        suggestionsRef.current && 
+        !suggestionsRef.current.contains(event.target as Node) &&
+        locationInputRef.current &&
+        !locationInputRef.current.contains(event.target as Node)
+      ) {
+        setShowSuggestions(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -65,24 +91,89 @@ export default function ReportPage({ onNavigate }: ReportPageProps) {
     }, 2000);
   };
 
+  const getLocationSuggestions = async (input: string) => {
+    if (input.length < 3) {
+      setLocationSuggestions([]);
+      setShowSuggestions(false);
+      return;
+    }
+
+    try {
+      // const response = await fetch(
+      //   `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${encodeURIComponent(input)}&key=${GOOGLE_MAPS_API_KEY}&components=country:IN`
+      // );
+      const response = await fetch(`/api/location-autocomplete?input=${encodeURIComponent(input)}`);
+      const data = await response.json();
+
+      if (data.predictions) {
+        const suggestions = data.predictions.map((prediction: any) => prediction.description);
+        setLocationSuggestions(suggestions);
+        setShowSuggestions(true);
+      }
+    } catch (error) {
+      console.error("Error fetching location suggestions:", error);
+    }
+  };
+
+  const handleLocationInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setFormData({ ...formData, location: value });
+    getLocationSuggestions(value);
+  };
+
+  const handleSuggestionClick = (suggestion: string) => {
+    setFormData({ ...formData, location: suggestion });
+    setShowSuggestions(false);
+    setLocationSuggestions([]);
+  };
+
   const getLocation = () => {
     if (navigator.geolocation) {
+      setIsGettingLocation(true);
       toast.info("Fetching your location...");
       navigator.geolocation.getCurrentPosition(
-        (position) => {
+        async (position) => {
           const { latitude, longitude } = position.coords;
-          setFormData({
-            ...formData,
-            location: `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`,
-          });
-          toast.success("Location detected");
+          
+          try {
+            // Use Google Maps Geocoding API to get address
+            const response = await fetch(
+              `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${GOOGLE_MAPS_API_KEY}`
+            );
+            const data = await response.json();
+            
+            let locationString = `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
+            
+            if (data.results && data.results[0]) {
+              // Get formatted address from Google Maps
+              locationString = data.results[0].formatted_address;
+            }
+            
+            setFormData({
+              ...formData,
+              location: locationString,
+            });
+            toast.success("Location detected with Google Maps");
+          } catch (error) {
+            // Fallback to coordinates if Google API fails
+            setFormData({
+              ...formData,
+              location: `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`,
+            });
+            toast.success("Location detected");
+          } finally {
+            setIsGettingLocation(false);
+          }
         },
-        () => {
+        (error) => {
           toast.error("Unable to fetch location");
+          console.error("Geolocation error:", error);
+          setIsGettingLocation(false);
         }
       );
     } else {
       toast.error("Geolocation not supported");
+      setIsGettingLocation(false);
     }
   };
 
@@ -164,7 +255,7 @@ export default function ReportPage({ onNavigate }: ReportPageProps) {
               {isAnalyzing && (
                 <Alert>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  <AlertDescription>
+                  <AlertDescription className="text-black">
                     AI is analyzing the image...
                   </AlertDescription>
                 </Alert>
@@ -173,7 +264,7 @@ export default function ReportPage({ onNavigate }: ReportPageProps) {
               {aiDetection && (
                 <Alert className="bg-green-50 border-green-200">
                   <Camera className="w-4 h-4 text-green-600" />
-                  <AlertDescription>
+                  <AlertDescription className="text-black">
                     <div className="space-y-1">
                       <p className="font-semibold text-green-900">AI Detection Complete</p>
                       <p className="text-sm text-green-800">
@@ -193,28 +284,68 @@ export default function ReportPage({ onNavigate }: ReportPageProps) {
               )}
 
               {/* Location */}
-              <div className="space-y-2">
+              <div className="space-y-2 relative">
                 <Label htmlFor="location" style={{ color: THEME.primary }}>Location *</Label>
                 <div className="flex gap-2">
-                  <Input
-                    id="location"
-                    placeholder="Enter address or coordinates"
-                    value={formData.location}
-                    onChange={(e) =>
-                      setFormData({ ...formData, location: e.target.value })
-                    }
-                    required
-                  />
-                  <Button type="button" variant="outline" onClick={getLocation}>
-                    <MapPin className="w-4 h-4 mr-2" />
-                    Auto-detect
+                  <div className="relative flex-1">
+                    <Input
+                      ref={locationInputRef}
+                      id="location"
+                      placeholder="Enter address or location name"
+                      value={formData.location}
+                      onChange={handleLocationInputChange}
+                      onFocus={() => {
+                        if (locationSuggestions.length > 0) {
+                          setShowSuggestions(true);
+                        }
+                      }}
+                      className="text-black pr-4"
+                      required
+                    />
+                    
+                    {/* Location Suggestions Dropdown */}
+                    {showSuggestions && locationSuggestions.length > 0 && (
+                      <div
+                        ref={suggestionsRef}
+                        className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto"
+                      >
+                        {locationSuggestions.map((suggestion, index) => (
+                          <div
+                            key={index}
+                            className="px-4 py-2 cursor-pointer hover:bg-blue-50 text-black border-b border-gray-100 last:border-b-0"
+                            onClick={() => handleSuggestionClick(suggestion)}
+                          >
+                            <div className="flex items-center gap-2">
+                              <MapPin className="w-4 h-4 text-blue-500 flex-shrink-0" />
+                              <span className="text-sm">{suggestion}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    onClick={getLocation}
+                    disabled={isGettingLocation}
+                    className="whitespace-nowrap border-blue-300 bg-blue-50 hover:bg-blue-100 text-blue-700 hover:text-blue-800"
+                  >
+                    {isGettingLocation ? (
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    ) : (
+                      <Navigation className="w-4 h-4 mr-2" />
+                    )}
+                    {isGettingLocation ? "Detecting..." : "Detect Location"}
                   </Button>
                 </div>
+                <p className="text-xs text-gray-500">Powered by Google Maps</p>
               </div>
 
               {/* Description */}
               <div className="space-y-2">
-                <Label htmlFor="description" style={{ color: THEME.primary }}>Description *</Label>
+                <Label htmlFor="description" style={{ color: THEME.primary }}>Description </Label>
                 <Textarea
                   id="description"
                   placeholder="Describe the situation, animal behavior, surroundings..."
@@ -223,7 +354,8 @@ export default function ReportPage({ onNavigate }: ReportPageProps) {
                   onChange={(e) =>
                     setFormData({ ...formData, description: e.target.value })
                   }
-                  required
+                  className="text-black"
+                  //required
                 />
               </div>
 
@@ -237,14 +369,14 @@ export default function ReportPage({ onNavigate }: ReportPageProps) {
                   }
                   required
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="text-black">
                     <SelectValue placeholder="Select severity level" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Low">Low - Minor issues</SelectItem>
-                    <SelectItem value="Medium">Medium - Needs attention</SelectItem>
-                    <SelectItem value="High">High - Urgent care needed</SelectItem>
-                    <SelectItem value="Critical">
+                    <SelectItem value="Low" className="text-black">Low - Minor issues</SelectItem>
+                    <SelectItem value="Medium" className="text-black">Medium - Needs attention</SelectItem>
+                    <SelectItem value="High" className="text-black">High - Urgent care needed</SelectItem>
+                    <SelectItem value="Critical" className="text-black">
                       Critical - Life-threatening
                     </SelectItem>
                   </SelectContent>
@@ -254,27 +386,29 @@ export default function ReportPage({ onNavigate }: ReportPageProps) {
               {/* Contact Info */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="contactName" style={{ color: THEME.primary }}>Your Name *</Label>
+                  <Label htmlFor="contactName" style={{ color: THEME.primary }}>Your Name </Label>
                   <Input
                     id="contactName"
-                    placeholder="John Doe"
+                    placeholder="Name"
                     value={formData.contactName}
                     onChange={(e) =>
                       setFormData({ ...formData, contactName: e.target.value })
                     }
-                    required
+                    className="text-black"
+                    //required
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="contactPhone" style={{ color: THEME.primary }}>Phone Number *</Label>
+                  <Label htmlFor="contactPhone" style={{ color: THEME.primary }}>Phone Number </Label>
                   <Input
                     id="contactPhone"
                     type="tel"
-                    placeholder="+1 (555) 123-4567"
+                    placeholder="+91 9278456790"
                     value={formData.contactPhone}
                     onChange={(e) =>
                       setFormData({ ...formData, contactPhone: e.target.value })
                     }
+                    className="text-black"
                     required
                   />
                 </div>
@@ -310,6 +444,7 @@ export default function ReportPage({ onNavigate }: ReportPageProps) {
                   <li>• You'll receive updates on the rescue progress</li>
                   <li>• Our AI will prioritize based on urgency level</li>
                   <li>• Your contact details remain private</li>
+                  <li>• Location powered by Google Maps for accuracy</li>
                 </ul>
               </div>
             </div>
