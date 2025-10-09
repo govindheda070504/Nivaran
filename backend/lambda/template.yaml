@@ -19,6 +19,19 @@ Resources:
           KeyType: HASH
       BillingMode: PAY_PER_REQUEST
 
+
+  NGOsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: ngos-table
+      AttributeDefinitions:
+        - AttributeName: ngo_id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: ngo_id
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+
   ReportCaseFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -47,3 +60,28 @@ Resources:
           Properties:
             Path: /report-case
             Method: post
+
+
+  CasesNearbyFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      CodeUri: functions/cases_nearby/
+      MemorySize: 256
+      Timeout: 10
+      Environment:
+        Variables:
+          CASES_TABLE: !Ref CasesTable
+          NGOS_TABLE: !Ref NGOsTable
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref CasesTable
+        - DynamoDBReadPolicy:
+            TableName: !Ref NGOsTable
+      Events:
+        CasesNearbyApi:
+          Type: Api
+          Properties:
+            Path: /cases-nearby
+            Method: get
