@@ -21,6 +21,13 @@ interface DashboardPageProps {
   onNavigate: (page: string) => void;
 }
 
+const THEME = {
+  primary: "#19C2E6",
+  accent: "#FED801",
+  cta: "#FF5A1F",
+  text: "#fff"
+};
+
 export default function DashboardPage({ onNavigate }: DashboardPageProps) {
   const [viewMode, setViewMode] = useState<"list" | "map">("list");
   const [filterStatus, setFilterStatus] = useState<string>("all");
@@ -108,57 +115,57 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
   };
 
   return (
-    <div className="min-h-screen bg-secondary/30 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8" style={{ background: THEME.primary }}>
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-2">
+          <h1 className="text-3xl sm:text-4xl font-bold mb-2" style={{ color: THEME.text }}>
             Rescue Dashboard
           </h1>
-          <p className="text-lg text-muted-foreground">
+          <p className="text-lg" style={{ color: "#eaf7ff" }}>
             Manage and respond to active rescue cases in your area
           </p>
         </div>
 
         {/* Stats Cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <Card>
+          <Card style={{ background: "#eaf7ff" }}>
             <CardContent className="pt-6">
-              <div className="text-2xl font-bold text-foreground">{stats.total}</div>
-              <p className="text-sm text-muted-foreground">Total Cases</p>
+              <div className="text-2xl font-bold" style={{ color: THEME.primary }}>{stats.total}</div>
+              <p className="text-sm" style={{ color: THEME.primary }}>Total Cases</p>
             </CardContent>
           </Card>
-          <Card className="border-blue-200 bg-blue-50">
+          <Card style={{ background: "#eaf7ff" }}>
             <CardContent className="pt-6">
-              <div className="text-2xl font-bold text-blue-700">{stats.new}</div>
-              <p className="text-sm text-blue-600">New</p>
+              <div className="text-2xl font-bold" style={{ color: THEME.primary }}>{stats.new}</div>
+              <p className="text-sm" style={{ color: THEME.primary }}>New</p>
             </CardContent>
           </Card>
-          <Card className="border-purple-200 bg-purple-50">
+          <Card style={{ background: "#eaf7ff" }}>
             <CardContent className="pt-6">
-              <div className="text-2xl font-bold text-purple-700">
+              <div className="text-2xl font-bold" style={{ color: THEME.primary }}>
                 {stats.inProgress}
               </div>
-              <p className="text-sm text-purple-600">In Progress</p>
+              <p className="text-sm" style={{ color: THEME.primary }}>In Progress</p>
             </CardContent>
           </Card>
-          <Card className="border-green-200 bg-green-50">
+          <Card style={{ background: "#eaf7ff" }}>
             <CardContent className="pt-6">
-              <div className="text-2xl font-bold text-green-700">
+              <div className="text-2xl font-bold" style={{ color: THEME.primary }}>
                 {stats.resolved}
               </div>
-              <p className="text-sm text-green-600">Resolved</p>
+              <p className="text-sm" style={{ color: THEME.primary }}>Resolved</p>
             </CardContent>
           </Card>
         </div>
 
         {/* Filters and Search */}
-        <Card className="mb-6">
+        <Card className="mb-6" style={{ background: "#eaf7ff" }}>
           <CardContent className="pt-6">
             <div className="flex flex-col md:flex-row gap-4">
               {/* Search */}
               <div className="flex-1 relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-blue-500" />
                 <Input
                   placeholder="Search by location or title..."
                   value={searchQuery}
@@ -231,9 +238,9 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
               ))
             ) : (
               <div className="col-span-full">
-                <Card>
+                <Card style={{ background: "#eaf7ff" }}>
                   <CardContent className="py-12 text-center">
-                    <p className="text-muted-foreground">
+                    <p style={{ color: THEME.primary }}>
                       No rescue cases found matching your filters.
                     </p>
                   </CardContent>
