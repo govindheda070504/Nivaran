@@ -3,6 +3,7 @@ import uuid
 import base64
 import boto3
 import json
+from decimal import Decimal
 
 s3 = boto3.client('s3', region_name='ap-south-1')
 rekognition = boto3.client('rekognition')
@@ -17,6 +18,8 @@ def lambda_handler(event, context):
             body = base64.b64decode(body).decode('utf-8')
         data = json.loads(body)
         image_data = base64.b64decode(data['image_base64'])
+        latitude = data.get('latitude')
+        longitude = data.get('longitude')
         case_id = str(uuid.uuid4())
 
         # Upload image to S3
@@ -32,7 +35,7 @@ def lambda_handler(event, context):
 
         # Filter for animals only
         labels = [label['Name'] for label in rekog_resp['Labels']]
-        animal_labels = [l for l in labels if l.lower() in ['cat','dog','cow','animal', 'mammal', 'bird']]  
+        animal_labels = [l for l in labels if l.lower() in ['cat', 'dog', 'cow', 'animal', 'mammal', 'bird']]
 
         if not animal_labels:
             status = 'invalid_image'
@@ -40,17 +43,22 @@ def lambda_handler(event, context):
         else:
             status = 'pending_review'
             message = 'Animal detected.'
-            # Optionally, check for "injury" or "wound" labels, or use custom model for injury detection.
 
         # Save to DynamoDB
         table = dynamodb.Table(TABLE_NAME)
-        table.put_item(Item={
+        item = {
             'case_id': case_id,
             's3_key': s3_key,
             'labels': labels,
             'status': status,
             'message': message
-        })
+        }
+        # Add location if provided
+        if latitude is not None and longitude is not None:
+            item['latitude'] = Decimal(str(latitude))
+            item['longitude'] = Decimal(str(longitude))
+
+        table.put_item(Item=item)
 
         return {
             'statusCode': 200,
@@ -58,7 +66,9 @@ def lambda_handler(event, context):
                 'case_id': case_id,
                 'status': status,
                 'message': message,
-                'labels': labels
+                'labels': labels,
+                'latitude':latitude,
+                'longitude':longitude
             })
         }
     except Exception as e:
