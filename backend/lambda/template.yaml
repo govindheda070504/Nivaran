@@ -5,12 +5,12 @@ Resources:
   AnimalImagesBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: nivaran-animal-images2
+      BucketName: nivaran-animal-image
 
   CasesTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: NivaranCases
+      TableName: nivaran-cases-table
       AttributeDefinitions:
         - AttributeName: case_id
           AttributeType: S
@@ -36,7 +36,11 @@ Resources:
             BucketName: !Ref AnimalImagesBucket
         - DynamoDBCrudPolicy:
             TableName: !Ref CasesTable
-        - RekognitionReadOnlyPolicy: {}
+        - Statement:
+            - Effect: Allow
+              Action:
+                - rekognition:DetectLabels
+              Resource: "*"
       Events:
         ReportCaseApi:
           Type: Api
