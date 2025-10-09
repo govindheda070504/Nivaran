@@ -8,7 +8,14 @@ import { useRouter } from "next/navigation";
 export default function LandingPage() {
   const router = useRouter();
 
-  const handleNavigate = (page: string) => {
+  const theme = {
+    primary: "#19C2E6",    // Blue
+    accent: "#FED801",     // Yellow
+    cta: "#FF5A1F",        // Orange
+    text: "#fff",
+    muted: "#eaf7ff"
+  };
+   const handleNavigate = (page: string) => {
     router.push(`/${page}`);
   };
 
@@ -17,19 +24,22 @@ export default function LandingPage() {
       icon: Zap,
       title: "AI Detection",
       description: "Advanced AI-powered image recognition to identify animal species, injuries, and urgency levels automatically.",
-      color: "text-yellow-500",
+      color: theme.accent,
+      iconColor: theme.cta,
     },
     {
       icon: MapPin,
       title: "Nearby Help",
       description: "Real-time location mapping connects you with the closest NGOs, volunteers, and rescue services instantly.",
-      color: "text-blue-500",
+      color: theme.accent,
+      iconColor: theme.primary,
     },
     {
       icon: Shield,
       title: "Verified NGOs",
       description: "Partner with trusted, verified animal welfare organizations and experienced volunteers nationwide.",
-      color: "text-green-500",
+      color: "#60C437",
+      iconColor: "#fff",
     },
   ];
 
@@ -41,20 +51,30 @@ export default function LandingPage() {
   ];
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen w-full" style={{ background: theme.primary }}>
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-primary/10 via-white to-accent/10 py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
+      <section className="relative py-20 px-4 sm:px-6 lg:px-8 w-full" style={{ background: theme.primary }}>
+        <div className="max-w-7xl mx-auto w-full">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
-              <div className="inline-flex items-center bg-primary/10 text-primary px-4 py-2 rounded-full">
-                <Heart className="w-4 h-4 mr-2" fill="currentColor" />
+              <div
+                className="inline-flex items-center px-4 py-2 rounded-full"
+                style={{
+                  background: theme.accent,
+                  color: theme.primary,
+                  fontWeight: 600
+                }}
+              >
+                <Heart className="w-4 h-4 mr-2" fill={theme.primary} />
                 <span className="text-sm font-semibold">AI-Powered Rescue Platform</span>
               </div>
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground leading-tight">
+              <h1
+                className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight"
+                style={{ color: theme.text }}
+              >
                 Rescue. Connect. Care.
               </h1>
-              <p className="text-xl text-muted-foreground">
+              <p className="text-xl mb-2" style={{ color: theme.muted }}>
                 Join thousands of compassionate citizens, NGOs, and volunteers in saving
                 lives. Report emergencies, adopt animals, and make a real difference in
                 your community.
@@ -63,6 +83,12 @@ export default function LandingPage() {
                 <Button
                   size="lg"
                   className="text-lg px-8"
+                  style={{
+                    background: theme.cta,
+                    color: theme.text,
+                    fontWeight: 600,
+                    borderRadius: "1.5rem"
+                  }}
                   onClick={() => handleNavigate("report")}
                 >
                   <Heart className="w-5 h-5 mr-2" />
@@ -72,19 +98,39 @@ export default function LandingPage() {
                   size="lg"
                   variant="outline"
                   className="text-lg px-8"
-                  onClick={() => handleNavigate("adopt")}
+                  style={{
+                    background: theme.text,
+                    color: theme.primary,
+                    fontWeight: 600,
+                    borderRadius: "1.5rem",
+                    border: "none"
+                  }}
+                  onClick={() => handleNavigate("adoption")}
                 >
                   Adopt Now
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
               </div>
             </div>
-            <div className="relative">
-              <div className="aspect-square rounded-2xl overflow-hidden shadow-2xl">
+            <div className="relative flex justify-center">
+             <div
+              className="overflow-hidden shadow-2xl flex items-center justify-center rounded-[60%_40%_70%_30%_/_30%_60%_40%_70%]"
+              style={{
+                border: `5px solid ${theme.accent}`,
+                width: "600px",
+                height: "380px",
+                background: theme.accent,
+              }}
+            >
                 <img
-                  src="https://images.unsplash.com/photo-1553434133-96822a8e94af?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzdHJheSUyMGRvZyUyMHJlc2N1ZXxlbnwxfHx8fDE3NTk2NTgwNTV8MA&ixlib=rb-4.1.0&q=80&w=1080"
+                  src="/landing-page-dog.png"
                   alt="Animal rescue hero"
-                  className="w-full h-full object-cover"
+                  style={{
+                    width: "600px",
+                    height: "400px",
+                    objectFit: "cover",
+                    borderRadius: "5%",
+                  }}
                 />
               </div>
             </div>
@@ -93,13 +139,18 @@ export default function LandingPage() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-12 bg-primary text-white">
+      <section className="py-12" style={{ background: "#FED801" }}>
+        {/* Changed from bg-primary to a yellow background (#FED801) */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat) => (
               <div key={stat.label} className="text-center">
-                <div className="text-3xl sm:text-4xl font-bold mb-2">{stat.value}</div>
-                <div className="text-sm sm:text-base text-primary-foreground/80">{stat.label}</div>
+                <div className="text-3xl sm:text-4xl font-bold mb-2" style={{ color: "#FF5A1F" }}>
+                  {stat.value}
+                </div>
+                <div className="text-sm sm:text-base" style={{ color: "#19C2E6" }}>
+                  {stat.label}
+                </div>
               </div>
             ))}
           </div>
@@ -107,13 +158,13 @@ export default function LandingPage() {
       </section>
 
       {/* Highlights Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
+      <section className="py-20 px-4 sm:px-6 lg:px-8 w-full" style={{ background: theme.primary }}>
+        <div className="max-w-7xl mx-auto w-full">
           <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4" style={{ color: theme.accent }}>
               How Nivran Makes a Difference
             </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-xl max-w-2xl mx-auto" style={{ color: theme.muted }}>
               Leveraging cutting-edge technology to create a seamless rescue ecosystem
             </p>
           </div>
@@ -121,15 +172,18 @@ export default function LandingPage() {
             {highlights.map((highlight) => {
               const Icon = highlight.icon;
               return (
-                <Card key={highlight.title} className="border-2 hover:border-primary transition-colors">
+                <Card key={highlight.title} className="border-2 hover:border-orange-400 transition-colors bg-white">
                   <CardHeader>
-                    <div className={`w-12 h-12 rounded-lg bg-${highlight.color.split('-')[1]}/10 flex items-center justify-center mb-4`}>
-                      <Icon className={`w-6 h-6 ${highlight.color}`} />
+                    <div
+                      className="w-12 h-12 rounded-lg flex items-center justify-center mb-4"
+                      style={{ background: highlight.color + "22" }}
+                    >
+                      <Icon className="w-6 h-6" style={{ color: highlight.iconColor }} />
                     </div>
-                    <h3 className="text-xl font-semibold text-foreground">{highlight.title}</h3>
+                    <h3 className="text-xl font-semibold" style={{ color: theme.primary }}>{highlight.title}</h3>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-muted-foreground">{highlight.description}</p>
+                    <p className="text-gray-500">{highlight.description}</p>
                   </CardContent>
                 </Card>
               );
@@ -139,8 +193,8 @@ export default function LandingPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-primary to-accent">
-        <div className="max-w-4xl mx-auto text-center">
+      <section className="py-20 px-4 sm:px-6 lg:px-8 w-full" style={{ background: theme.cta }}>
+        <div className="max-w-4xl mx-auto text-center w-full">
           <h2 className="text-3xl sm:text-4xl font-bold text-white mb-6">
             Ready to Make a Difference?
           </h2>
@@ -152,6 +206,12 @@ export default function LandingPage() {
               size="lg"
               variant="secondary"
               className="text-lg px-8"
+              style={{
+                backgroundColor: theme.primary,
+                color: "#fff",
+                fontWeight: 600,
+                borderRadius: "999px",
+              }}
               onClick={() => handleNavigate("volunteer")}
             >
               <Users className="w-5 h-5 mr-2" />
@@ -160,7 +220,14 @@ export default function LandingPage() {
             <Button
               size="lg"
               variant="outline"
-              className="text-lg px-8 bg-white/10 text-white border-white hover:bg-white hover:text-primary"
+              className="text-lg px-8 border-white"
+              style={{
+                background: "#fff",
+                color: theme.cta,
+                fontWeight: 600,
+                borderRadius: "999px",
+                borderColor: "#fff"
+              }}
               onClick={() => handleNavigate("dashboard")}
             >
               View Dashboard
@@ -171,13 +238,13 @@ export default function LandingPage() {
       </section>
 
       {/* How It Works */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
+      <section className="py-20 px-4 sm:px-6 lg:px-8 w-full" style={{ background: theme.primary }}>
+        <div className="max-w-7xl mx-auto w-full">
           <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4" style={{ color: theme.accent }}>
               Simple, Fast, Effective
             </h2>
-            <p className="text-xl text-muted-foreground">
+            <p className="text-xl" style={{ color: theme.muted }}>
               Three easy steps to help save a life
             </p>
           </div>
@@ -200,11 +267,14 @@ export default function LandingPage() {
               },
             ].map((item) => (
               <div key={item.step} className="flex flex-col items-center text-center">
-                <div className="w-16 h-16 rounded-full bg-primary text-white flex items-center justify-center text-2xl font-bold mb-4">
+                <div
+                  className="w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold mb-4"
+                  style={{ background: theme.accent, color: theme.primary }}
+                >
                   {item.step}
                 </div>
-                <h3 className="text-xl font-semibold text-foreground mb-2">{item.title}</h3>
-                <p className="text-muted-foreground">{item.description}</p>
+                <h3 className="text-xl font-semibold mb-2" style={{ color: "#fff" }}>{item.title}</h3>
+                <p style={{ color: theme.muted }}>{item.description}</p>
               </div>
             ))}
           </div>

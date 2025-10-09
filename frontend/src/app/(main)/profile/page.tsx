@@ -27,6 +27,13 @@ interface ProfilePageProps {
   onNavigate: (page: string) => void;
 }
 
+const THEME = {
+  primary: "#19C2E6",
+  accent: "#FED801",
+  cta: "#FF5A1F",
+  text: "#fff"
+};
+
 export default function ProfilePage({ onNavigate }: ProfilePageProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [profileData, setProfileData] = useState({
@@ -106,7 +113,7 @@ export default function ProfilePage({ onNavigate }: ProfilePageProps) {
   };
 
   return (
-    <div className="min-h-screen bg-secondary/30 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8" style={{ background: THEME.primary }}>
       <div className="max-w-6xl mx-auto">
         {/* Profile Header */}
         <Card className="mb-8">
@@ -121,7 +128,7 @@ export default function ProfilePage({ onNavigate }: ProfilePageProps) {
                   <div className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="name">Name</Label>
+                        <Label htmlFor="name" style={{ color: THEME.primary }}>Name</Label>
                         <Input
                           id="name"
                           value={profileData.name}
@@ -131,7 +138,7 @@ export default function ProfilePage({ onNavigate }: ProfilePageProps) {
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="email">Email</Label>
+                        <Label htmlFor="email" style={{ color: THEME.primary }}>Email</Label>
                         <Input
                           id="email"
                           type="email"
@@ -142,7 +149,7 @@ export default function ProfilePage({ onNavigate }: ProfilePageProps) {
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="phone">Phone</Label>
+                        <Label htmlFor="phone" style={{ color: THEME.primary }}>Phone</Label>
                         <Input
                           id="phone"
                           value={profileData.phone}
@@ -152,7 +159,7 @@ export default function ProfilePage({ onNavigate }: ProfilePageProps) {
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="location">Location</Label>
+                        <Label htmlFor="location" style={{ color: THEME.primary }}>Location</Label>
                         <Input
                           id="location"
                           value={profileData.location}
@@ -168,25 +175,25 @@ export default function ProfilePage({ onNavigate }: ProfilePageProps) {
                   </div>
                 ) : (
                   <div>
-                    <h2 className="text-2xl font-bold text-foreground mb-2">
+                    <h2 className="text-2xl font-bold mb-2" style={{ color: THEME.primary }}>
                       {profileData.name}
                     </h2>
-                    <p className="text-muted-foreground mb-4">{profileData.bio}</p>
+                    <p className="mb-4" style={{ color: "#eaf7ff" }}>{profileData.bio}</p>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
-                      <div className="flex items-center text-muted-foreground">
-                        <Mail className="w-4 h-4 mr-2 text-primary" />
+                      <div className="flex items-center" style={{ color: "#eaf7ff" }}>
+                        <Mail className="w-4 h-4 mr-2" style={{ color: THEME.accent }} />
                         {profileData.email}
                       </div>
-                      <div className="flex items-center text-muted-foreground">
-                        <Phone className="w-4 h-4 mr-2 text-primary" />
+                      <div className="flex items-center" style={{ color: "#eaf7ff" }}>
+                        <Phone className="w-4 h-4 mr-2" style={{ color: THEME.accent }} />
                         {profileData.phone}
                       </div>
-                      <div className="flex items-center text-muted-foreground">
-                        <MapPin className="w-4 h-4 mr-2 text-primary" />
+                      <div className="flex items-center" style={{ color: "#eaf7ff" }}>
+                        <MapPin className="w-4 h-4 mr-2" style={{ color: THEME.accent }} />
                         {profileData.location}
                       </div>
-                      <div className="flex items-center text-muted-foreground">
-                        <Calendar className="w-4 h-4 mr-2 text-primary" />
+                      <div className="flex items-center" style={{ color: "#eaf7ff" }}>
+                        <Calendar className="w-4 h-4 mr-2" style={{ color: THEME.accent }} />
                         Joined {profileData.joinedDate}
                       </div>
                     </div>
@@ -217,36 +224,36 @@ export default function ProfilePage({ onNavigate }: ProfilePageProps) {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <Card className="border-primary/20 bg-primary/5">
+          <Card style={{ background: "#eaf7ff" }}>
             <CardContent className="pt-6 text-center">
-              <Heart className="w-8 h-8 mx-auto mb-2 text-primary" />
-              <div className="text-2xl font-bold text-foreground">{stats.rescues}</div>
-              <p className="text-sm text-muted-foreground">Rescues</p>
+              <Heart className="w-8 h-8 mx-auto mb-2" style={{ color: THEME.cta }} />
+              <div className="text-2xl font-bold" style={{ color: THEME.primary }}>{stats.rescues}</div>
+              <p className="text-sm" style={{ color: THEME.primary }}>Rescues</p>
             </CardContent>
           </Card>
-          <Card className="border-green-500/20 bg-green-50">
+          <Card style={{ background: "#eaf7ff" }}>
             <CardContent className="pt-6 text-center">
-              <User className="w-8 h-8 mx-auto mb-2 text-green-600" />
-              <div className="text-2xl font-bold text-green-700">
+              <User className="w-8 h-8 mx-auto mb-2" style={{ color: "#60C437" }} />
+              <div className="text-2xl font-bold" style={{ color: "#60C437" }}>
                 {stats.adoptions}
               </div>
-              <p className="text-sm text-green-600">Adoptions</p>
+              <p className="text-sm" style={{ color: "#60C437" }}>Adoptions</p>
             </CardContent>
           </Card>
-          <Card className="border-blue-500/20 bg-blue-50">
+          <Card style={{ background: "#eaf7ff" }}>
             <CardContent className="pt-6 text-center">
-              <Calendar className="w-8 h-8 mx-auto mb-2 text-blue-600" />
-              <div className="text-2xl font-bold text-blue-700">
+              <Calendar className="w-8 h-8 mx-auto mb-2" style={{ color: THEME.primary }} />
+              <div className="text-2xl font-bold" style={{ color: THEME.primary }}>
                 {stats.volunteering}
               </div>
-              <p className="text-sm text-blue-600">Volunteering</p>
+              <p className="text-sm" style={{ color: THEME.primary }}>Volunteering</p>
             </CardContent>
           </Card>
-          <Card className="border-yellow-500/20 bg-yellow-50">
+          <Card style={{ background: "#eaf7ff" }}>
             <CardContent className="pt-6 text-center">
-              <Award className="w-8 h-8 mx-auto mb-2 text-yellow-600" />
-              <div className="text-2xl font-bold text-yellow-700">{stats.points}</div>
-              <p className="text-sm text-yellow-600">Points</p>
+              <Award className="w-8 h-8 mx-auto mb-2" style={{ color: THEME.accent }} />
+              <div className="text-2xl font-bold" style={{ color: THEME.accent }}>{stats.points}</div>
+              <p className="text-sm" style={{ color: THEME.accent }}>Points</p>
             </CardContent>
           </Card>
         </div>
@@ -262,7 +269,7 @@ export default function ProfilePage({ onNavigate }: ProfilePageProps) {
           <TabsContent value="activity" className="space-y-4">
             <Card>
               <CardHeader>
-                <h3 className="text-xl font-semibold">Recent Rescues</h3>
+                <h3 className="text-xl font-semibold" style={{ color: THEME.primary }}>Recent Rescues</h3>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -277,8 +284,8 @@ export default function ProfilePage({ onNavigate }: ProfilePageProps) {
           <TabsContent value="achievements" className="space-y-4">
             <Card>
               <CardHeader>
-                <h3 className="text-xl font-semibold">Your Achievements</h3>
-                <p className="text-sm text-muted-foreground">
+                <h3 className="text-xl font-semibold" style={{ color: THEME.primary }}>Your Achievements</h3>
+                <p className="text-sm" style={{ color: THEME.primary }}>
                   Earn badges by helping animals and contributing to the community
                 </p>
               </CardHeader>
@@ -289,20 +296,19 @@ export default function ProfilePage({ onNavigate }: ProfilePageProps) {
                     return (
                       <Card
                         key={achievement.title}
-                        className={`${
-                          achievement.earned
-                            ? "border-primary/20 bg-primary/5"
-                            : "opacity-50"
-                        }`}
+                        style={{
+                          background: achievement.earned ? "#eaf7ff" : "#eaf7ff",
+                          opacity: achievement.earned ? 1 : 0.5
+                        }}
                       >
                         <CardContent className="pt-6 text-center">
                           <Icon
                             className={`w-12 h-12 mx-auto mb-3 ${achievement.color}`}
                           />
-                          <h4 className="font-semibold text-foreground mb-1">
+                          <h4 className="font-semibold mb-1" style={{ color: THEME.primary }}>
                             {achievement.title}
                           </h4>
-                          <p className="text-xs text-muted-foreground">
+                          <p className="text-xs" style={{ color: THEME.primary }}>
                             {achievement.description}
                           </p>
                           {achievement.earned && (
@@ -322,13 +328,13 @@ export default function ProfilePage({ onNavigate }: ProfilePageProps) {
           <TabsContent value="settings" className="space-y-4">
             <Card>
               <CardHeader>
-                <h3 className="text-xl font-semibold">Notification Settings</h3>
+                <h3 className="text-xl font-semibold" style={{ color: THEME.primary }}>Notification Settings</h3>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-medium">Email Notifications</p>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="font-medium" style={{ color: THEME.primary }}>Email Notifications</p>
+                    <p className="text-sm" style={{ color: THEME.primary }}>
                       Receive updates via email
                     </p>
                   </div>
@@ -336,8 +342,8 @@ export default function ProfilePage({ onNavigate }: ProfilePageProps) {
                 </div>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-medium">Push Notifications</p>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="font-medium" style={{ color: THEME.primary }}>Push Notifications</p>
+                    <p className="text-sm" style={{ color: THEME.primary }}>
                       Get instant alerts for nearby rescues
                     </p>
                   </div>
@@ -345,8 +351,8 @@ export default function ProfilePage({ onNavigate }: ProfilePageProps) {
                 </div>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-medium">SMS Alerts</p>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="font-medium" style={{ color: THEME.primary }}>SMS Alerts</p>
+                    <p className="text-sm" style={{ color: THEME.primary }}>
                       Receive text messages for critical cases
                     </p>
                   </div>
@@ -357,7 +363,7 @@ export default function ProfilePage({ onNavigate }: ProfilePageProps) {
 
             <Card>
               <CardHeader>
-                <h3 className="text-xl font-semibold">Privacy & Security</h3>
+                <h3 className="text-xl font-semibold" style={{ color: THEME.primary }}>Privacy & Security</h3>
               </CardHeader>
               <CardContent className="space-y-4">
                 <Button variant="outline" className="w-full justify-start">

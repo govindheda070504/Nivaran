@@ -1,4 +1,3 @@
-// src/app/(main)/layout.tsx
 import '@/styles/globals.css'
 import { Navbar } from '@/components/Navbar'
 import { Footer } from '@/components/Footer'
@@ -8,12 +7,15 @@ export const metadata = {
   description: 'Your app description',
 }
 
+// This is your theme color. Use your Tailwind config or inline style.
+const MAIN_BLUE = "#19C2E6";
+
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className="bg-white text-black">
+      <body style={{ background: MAIN_BLUE, color: "#fff" }}>
         <Navbar />
-        <main className="min-h-screen px-4 md:px-8 lg:px-16">
+        <main className="min-h-screen w-full">
           {children} {/* All pages render here */}
         </main>
         <Footer />

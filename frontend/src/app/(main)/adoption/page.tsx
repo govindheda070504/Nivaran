@@ -29,6 +29,13 @@ interface AdoptionPageProps {
   onNavigate: (page: string) => void;
 }
 
+const THEME = {
+  primary: "#19C2E6",
+  accent: "#FED801",
+  cta: "#FF5A1F",
+  text: "#fff"
+};
+
 export default function AdoptionPage({ onNavigate }: AdoptionPageProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterType, setFilterType] = useState("all");
@@ -161,20 +168,20 @@ export default function AdoptionPage({ onNavigate }: AdoptionPageProps) {
   };
 
   return (
-    <div className="min-h-screen bg-secondary/30 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8" style={{ background: THEME.primary }}>
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8 text-center">
-          <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-2">
+          <h1 className="text-3xl sm:text-4xl font-bold mb-2" style={{ color: THEME.text }}>
             Find Your New Best Friend
           </h1>
-          <p className="text-lg text-muted-foreground">
+          <p className="text-lg" style={{ color: "#eaf7ff" }}>
             Give a loving home to animals in need of adoption
           </p>
         </div>
 
         {/* Stats Banner */}
-        <div className="bg-primary text-white rounded-lg p-6 mb-8 text-center">
+        <div style={{ background: THEME.primary, color: THEME.text }} className="rounded-lg p-6 mb-8 text-center">
           <div className="flex flex-col md:flex-row justify-center items-center gap-8">
             <div>
               <div className="text-3xl font-bold">{mockAnimals.length}</div>
@@ -202,11 +209,11 @@ export default function AdoptionPage({ onNavigate }: AdoptionPageProps) {
         </div>
 
         {/* Filters */}
-        <Card className="mb-8">
+        <Card className="mb-8" style={{ background: "#eaf7ff" }}>
           <CardContent className="pt-6">
             <div className="flex flex-col md:flex-row gap-4">
               <div className="flex-1 relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-blue-500" />
                 <Input
                   placeholder="Search by name or breed..."
                   value={searchQuery}
@@ -252,9 +259,9 @@ export default function AdoptionPage({ onNavigate }: AdoptionPageProps) {
             ))
           ) : (
             <div className="col-span-full">
-              <Card>
+              <Card style={{ background: "#eaf7ff" }}>
                 <CardContent className="py-12 text-center">
-                  <p className="text-muted-foreground">
+                  <p style={{ color: THEME.primary }}>
                     No animals found matching your search criteria.
                   </p>
                 </CardContent>
@@ -277,7 +284,7 @@ export default function AdoptionPage({ onNavigate }: AdoptionPageProps) {
             <form onSubmit={handleSubmitAdoption} className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="name">Full Name *</Label>
+                  <Label htmlFor="name" style={{ color: THEME.primary }}>Full Name *</Label>
                   <Input
                     id="name"
                     value={adoptionForm.name}
@@ -288,7 +295,7 @@ export default function AdoptionPage({ onNavigate }: AdoptionPageProps) {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email *</Label>
+                  <Label htmlFor="email" style={{ color: THEME.primary }}>Email *</Label>
                   <Input
                     id="email"
                     type="email"
@@ -302,7 +309,7 @@ export default function AdoptionPage({ onNavigate }: AdoptionPageProps) {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="phone">Phone Number *</Label>
+                  <Label htmlFor="phone" style={{ color: THEME.primary }}>Phone Number *</Label>
                   <Input
                     id="phone"
                     type="tel"
@@ -314,7 +321,7 @@ export default function AdoptionPage({ onNavigate }: AdoptionPageProps) {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="address">Address *</Label>
+                  <Label htmlFor="address" style={{ color: THEME.primary }}>Address *</Label>
                   <Input
                     id="address"
                     value={adoptionForm.address}
@@ -326,7 +333,7 @@ export default function AdoptionPage({ onNavigate }: AdoptionPageProps) {
                 </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="experience">Pet Ownership Experience</Label>
+                <Label htmlFor="experience" style={{ color: THEME.primary }}>Pet Ownership Experience</Label>
                 <Textarea
                   id="experience"
                   placeholder="Tell us about your experience with pets..."
@@ -338,7 +345,7 @@ export default function AdoptionPage({ onNavigate }: AdoptionPageProps) {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="reason">Why do you want to adopt? *</Label>
+                <Label htmlFor="reason" style={{ color: THEME.primary }}>Why do you want to adopt? *</Label>
                 <Textarea
                   id="reason"
                   placeholder="Share your reasons for adopting..."
@@ -358,7 +365,7 @@ export default function AdoptionPage({ onNavigate }: AdoptionPageProps) {
                 >
                   Cancel
                 </Button>
-                <Button type="submit">
+                <Button type="submit" style={{ background: THEME.cta, color: THEME.text }}>
                   <Heart className="w-4 h-4 mr-2" />
                   Submit Application
                 </Button>

@@ -20,6 +20,13 @@ interface ReportPageProps {
   onNavigate: (page: string) => void;
 }
 
+const THEME = {
+  primary: "#19C2E6",
+  accent: "#FED801",
+  cta: "#FF5A1F",
+  text: "#fff"
+};
+
 export default function ReportPage({ onNavigate }: ReportPageProps) {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -38,7 +45,6 @@ export default function ReportPage({ onNavigate }: ReportPageProps) {
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result as string);
-        // Simulate AI detection
         simulateAIDetection();
       };
       reader.readAsDataURL(file);
@@ -88,37 +94,37 @@ export default function ReportPage({ onNavigate }: ReportPageProps) {
       return;
     }
 
-    // Simulate submission to backend
     toast.success("Rescue report submitted successfully!");
     
-    // Reset form
     setTimeout(() => {
       onNavigate("dashboard");
     }, 1500);
   };
 
   return (
-    <div className="min-h-screen bg-secondary/30 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8" style={{ background: THEME.primary }}>
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-8">
-          <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
+          <h1 className="text-3xl sm:text-4xl font-bold mb-4" style={{ color: THEME.text }}>
             Report a Rescue Case
           </h1>
-          <p className="text-lg text-muted-foreground">
+          <p className="text-lg" style={{ color: "#eaf7ff" }}>
             Help us help them. Upload a photo and provide details about the animal in need.
           </p>
         </div>
 
         <Card>
           <CardHeader>
-            <h2 className="text-xl font-semibold">Case Details</h2>
+            <h2 className="text-xl font-semibold" style={{ color: THEME.primary }}>
+              Case Details
+            </h2>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Image Upload */}
               <div className="space-y-2">
-                <Label>Upload Photo *</Label>
-                <div className="border-2 border-dashed border-border rounded-lg p-8 text-center hover:border-primary transition-colors">
+                <Label style={{ color: THEME.primary }}>Upload Photo *</Label>
+                <div className="border-2 border-dashed border-blue-300 rounded-lg p-8 text-center hover:border-yellow-400 transition-colors">
                   {imagePreview ? (
                     <div className="space-y-4">
                       <img
@@ -142,11 +148,11 @@ export default function ReportPage({ onNavigate }: ReportPageProps) {
                         className="hidden"
                         onChange={handleImageUpload}
                       />
-                      <Upload className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-                      <p className="text-muted-foreground mb-2">
+                      <Upload className="w-12 h-12 mx-auto text-blue-500 mb-4" />
+                      <p className="text-blue-500 mb-2">
                         Click to upload or drag and drop
                       </p>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-sm text-blue-400">
                         PNG, JPG, GIF up to 10MB
                       </p>
                     </label>
@@ -188,7 +194,7 @@ export default function ReportPage({ onNavigate }: ReportPageProps) {
 
               {/* Location */}
               <div className="space-y-2">
-                <Label htmlFor="location">Location *</Label>
+                <Label htmlFor="location" style={{ color: THEME.primary }}>Location *</Label>
                 <div className="flex gap-2">
                   <Input
                     id="location"
@@ -208,7 +214,7 @@ export default function ReportPage({ onNavigate }: ReportPageProps) {
 
               {/* Description */}
               <div className="space-y-2">
-                <Label htmlFor="description">Description *</Label>
+                <Label htmlFor="description" style={{ color: THEME.primary }}>Description *</Label>
                 <Textarea
                   id="description"
                   placeholder="Describe the situation, animal behavior, surroundings..."
@@ -223,7 +229,7 @@ export default function ReportPage({ onNavigate }: ReportPageProps) {
 
               {/* Severity */}
               <div className="space-y-2">
-                <Label htmlFor="severity">Injury Severity *</Label>
+                <Label htmlFor="severity" style={{ color: THEME.primary }}>Injury Severity *</Label>
                 <Select
                   value={formData.severity}
                   onValueChange={(value) =>
@@ -248,7 +254,7 @@ export default function ReportPage({ onNavigate }: ReportPageProps) {
               {/* Contact Info */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="contactName">Your Name *</Label>
+                  <Label htmlFor="contactName" style={{ color: THEME.primary }}>Your Name *</Label>
                   <Input
                     id="contactName"
                     placeholder="John Doe"
@@ -260,7 +266,7 @@ export default function ReportPage({ onNavigate }: ReportPageProps) {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="contactPhone">Phone Number *</Label>
+                  <Label htmlFor="contactPhone" style={{ color: THEME.primary }}>Phone Number *</Label>
                   <Input
                     id="contactPhone"
                     type="tel"
@@ -276,7 +282,7 @@ export default function ReportPage({ onNavigate }: ReportPageProps) {
 
               {/* Submit Button */}
               <div className="flex gap-4">
-                <Button type="submit" className="flex-1">
+                <Button type="submit" className="flex-1" style={{ background: THEME.cta, color: THEME.text }}>
                   <Send className="w-4 h-4 mr-2" />
                   Submit Rescue Report
                 </Button>
@@ -293,7 +299,7 @@ export default function ReportPage({ onNavigate }: ReportPageProps) {
         </Card>
 
         {/* Info Card */}
-        <Card className="mt-6 bg-blue-50 border-blue-200">
+        <Card className="mt-6" style={{ background: "#eaf7ff", borderColor: THEME.primary }}>
           <CardContent className="pt-6">
             <div className="flex items-start gap-3">
               <AlertCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
